@@ -18,6 +18,7 @@
     "@nuxtjs/tailwindcss": "^6.6.5",
     "@pinia/nuxt": "^0.4.7",
     "vite": "^4.2.1",
+    "vue": "^3.2.47",
     "webpack": "^5.77.0"
   }
 }
