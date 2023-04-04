@@ -1,15 +1,16 @@
 <script setup lang="ts">
-const user = useSupabaseUser()
 const client = useSupabaseAuthClient()
 const router = useRouter()
 // Login method using providers
-const login = async (provider: 'github' | 'google' | 'facebook') => {
+async function login(provider: 'github' | 'google' | 'facebook') {
   const { error } = await client.auth.signInWithOAuth({ provider })
   if (error) {
     return alert('Something went wrong !')
   }
   router.push('/')
 }
+
+
 </script>
 
 <template>

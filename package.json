@@ -9,12 +9,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "nuxt": "^3.3.2"
+    "nuxt": "^3.3.2",
+    "nuxt-icon": "^0.3.3"
   },
   "dependencies": {
     "@nuxt/devtools": "^0.3.1",
     "@nuxtjs/supabase": "^0.3.1",
     "@nuxtjs/tailwindcss": "^6.6.5",
+    "@pinia/nuxt": "^0.4.7",
     "vite": "^4.2.1",
     "webpack": "^5.77.0"
   }

@@ -4,9 +4,16 @@ export default defineNuxtConfig({
         '@nuxtjs/tailwindcss',
         '@nuxt/devtools',
         '@nuxtjs/supabase',
+        'nuxt-icon',
+        '@pinia/nuxt',
     ],
     devtools: {
         enabled: true,
-        componentInspector: true
+    },
+    pinia: {
+        // Auto imports 'defineStore' from 'pinia' in every file`
+        autoImports: [
+            'defineStore',
+        ]
     },
 })
