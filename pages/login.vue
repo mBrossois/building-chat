@@ -9,7 +9,7 @@ async function login(provider: 'github' | 'google' | 'facebook') {
     return alert('Something went wrong !')
   }
 
-  router.push('/')
+  navigateTo('/')
 }
 
 watch(user, () => {
