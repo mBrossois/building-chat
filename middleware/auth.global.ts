@@ -1,9 +1,10 @@
-export default defineNuxtRouteMiddleware(to => {  
-  console.log('middleware/auth.ts')
-  
+export default defineNuxtRouteMiddleware(to => {    
   const user = useSupabaseUser()
 
   if (!user.value && to.path !== '/login') {
     return navigateTo('/login')
+  }
+  if (user.value && to.path.includes('/login')) {
+    return navigateTo('/')
   }
 })

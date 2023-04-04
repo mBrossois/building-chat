@@ -6,6 +6,7 @@ export default defineNuxtConfig({
         '@nuxtjs/supabase',
     ],
     devtools: {
-        enabled: true
+        enabled: true,
+        componentInspector: true
     },
 })
