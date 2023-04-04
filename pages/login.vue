@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const user = useSupabaseUser()
 const client = useSupabaseAuthClient()
 const router = useRouter()
 // Login method using providers
@@ -7,9 +8,15 @@ async function login(provider: 'github' | 'google' | 'facebook') {
   if (error) {
     return alert('Something went wrong !')
   }
+
   router.push('/')
 }
 
+watch(user, () => {
+  if (user.value) {
+    navigateTo('/')
+  }
+})
 
 </script>
 
