@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+const client = useSupabaseClient()
 
-// const route = useRoute()
-
+// Check if user is allowed to access this page
+// const { data: users } = await useAsyncData('users', async () => {
+//   const { data } = await client.from('users').select('name, location').eq('name', 'My Restaurant Name').single()
+//   return data
+// })
 // Connect to supabSase
 // const client = useSupabaseClient()
 // console.log(client)
