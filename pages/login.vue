@@ -22,6 +22,8 @@ watch(user, () => {
   }
 })
 
+console.log(config)
+
 </script>
 
 <template>
