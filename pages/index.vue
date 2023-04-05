@@ -3,10 +3,12 @@ import { ref } from 'vue';
 const client = useSupabaseClient()
 
 // Check if user is allowed to access this page
-// const { data: users } = await useAsyncData('users', async () => {
-//   const { data } = await client.from('users').select('name, location').eq('name', 'My Restaurant Name').single()
-//   return data
-// })
+const { data } = await useAsyncData('Messages', async () => {
+  const { data } = await client.from('Messages').select('*').range(0, 10)
+  return data
+})
+
+console.log(data)
 // Connect to supabSase
 // const client = useSupabaseClient()
 // console.log(client)

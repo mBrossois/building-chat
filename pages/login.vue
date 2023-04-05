@@ -31,6 +31,7 @@ async function signInWithEmail() {
   }
 
   email = ''
+  navigateTo('/email-send')
 }
 
 watch(user, () => {
