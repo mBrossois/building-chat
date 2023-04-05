@@ -7,7 +7,7 @@ const config = useRuntimeConfig()
 async function login(provider: 'github' | 'google' | 'facebook') {
   const { error } = await client.auth.signInWithOAuth({ provider,
   options: {
-    redirectTo: config.SITE_URL ? config.SITE_URL : 'http://localhost:3000'
+    redirectTo: config.SITE_URL ? config.SITE_URL : 'https://building-chat-pgb.netlify.app'
   } })
   if (error) {
     return alert('Something went wrong !')
