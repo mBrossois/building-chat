@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            siteUrl: process.env.SITE_URL,
+            SITE_URL: process.env.SITE_URL,
         }
     }
 })
