@@ -16,4 +16,9 @@ export default defineNuxtConfig({
             'defineStore',
         ]
     },
+    runtimeConfig: {
+        public: {
+            siteUrl: process.env.SITE_URL,
+        }
+    }
 })

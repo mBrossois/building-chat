@@ -1,10 +1,14 @@
 <script setup lang="ts">
 const user = useSupabaseUser()
 const client = useSupabaseAuthClient()
-const router = useRouter()
+const config = useRuntimeConfig()
+
 // Login method using providers
 async function login(provider: 'github' | 'google' | 'facebook') {
-  const { error } = await client.auth.signInWithOAuth({ provider })
+  const { error } = await client.auth.signInWithOAuth({ provider,
+  options: {
+    redirectTo: config.siteUrl ? config.siteUrl : 'http://localhost:3000'
+  } })
   if (error) {
     return alert('Something went wrong !')
   }
