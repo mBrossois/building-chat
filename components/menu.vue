@@ -1,7 +1,10 @@
 <template>
-    <div v-show="isOpen" class="menu">
-        <button @click="goTo('/')" class="inline-flex min-w-32 justify-center rounded-md bg-white py-2 px-4 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0">Messages</button>
-        <button @click="logOut()" class="inline-flex min-w-32 justify-center rounded-md bg-white py-2 px-4 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0">Log out</button>
+    <div v-show="isOpen()" class="menu absolute h-full w-full bg-blue-lightest px-2 pt-5">
+        <NavItem text="Messages"></NavItem>
+        <NavItem text="Neighbours"></NavItem>
+        <NavItem text="Profile"></NavItem>
+        <NavItem text="Settings"></NavItem>
+        <NavItem :preventDefault="true" text="Log out" @onClick="logOut"></NavItem>
     </div>
 </template>
 
@@ -23,5 +26,6 @@
     async function logOut() {
         await useSupabaseAuthClient().auth.signOut()
         await navigateTo('/login')
+        useMenuStore().toggleMenu()
     }
 </script>

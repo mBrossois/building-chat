@@ -15,13 +15,11 @@ let { data: Profile, error: profileErrror } = await client
   .eq('user_id', '492547b8-9065-47f6-96b4-08c88a036210')
   .single()
   if(profileErrror) {
-    console.log('profile error', profileErrror)
-    console.log('user', user.value?.id)
+    alert('Something went wrong !')
   }
 
 
 // Get the messages from the database
-// TODO: add users (email) to the messages
 let { data: Messages, error } = await client
   .from('Messages')
   .select(`
@@ -31,10 +29,9 @@ let { data: Messages, error } = await client
   `)
   .range(0, 10)
   if(error) {
-    console.log('error', error)
+    alert('Something went wrong !')
   }
 
-  console.log('messages', Messages)
 
 // Subscribe to changes in the Messages table
 const MessagesChannel = client.channel('custom-all-channel')
@@ -115,7 +112,7 @@ async function onSendMessage(){
 
 <style>
 .message::before {
-  content: '';
+  /* content: '';
   position: relative;
   top: .6rem;
   left: -.2rem;
@@ -125,6 +122,6 @@ async function onSendMessage(){
   border-width: 0 0 0 0;
   border-color: transparent transparent transparent transparent;
   background-color: white;
-  transform: rotate(14deg);
+  transform: rotate(14deg); */
 }
 </style>
