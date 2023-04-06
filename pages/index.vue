@@ -70,7 +70,6 @@ async function onSendMessage(){
     }
     const result = await sendMessage(newMessage, user.value.id, Profile.id)
     // Add the message to the messages array
-    console.log(result)
     if(result) {
       alert('Something went wrong !')
       return 
