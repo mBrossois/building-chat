@@ -1,7 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { sendMessage } from '../api/messages';
 const client = useSupabaseClient()
 const user = useSupabaseUser()
+
+
+// get profile data
+let { data: Profile, error: profileErrror } = await client
+  .from('Profiles')
+  .select(`
+    id, 
+    name
+  `)
+  .eq('user_id', '492547b8-9065-47f6-96b4-08c88a036210')
+  .single()
+  if(profileErrror) {
+    console.log('profile error', profileErrror)
+    console.log('user', user.value?.id)
+  }
+
 
 // Get the messages from the database
 // TODO: add users (email) to the messages
@@ -10,12 +27,14 @@ let { data: Messages, error } = await client
   .select(`
     created_at, 
     message,
-    sendByUser
+    Profiles (name)
   `)
   .range(0, 10)
   if(error) {
     console.log('error', error)
   }
+
+  console.log('messages', Messages)
 
 // Subscribe to changes in the Messages table
 const MessagesChannel = client.channel('custom-all-channel')
@@ -39,31 +58,34 @@ const messages = ref(Messages)
 let newMessage = ''
 
 // Function to send messages
-async function sendMessage() {
-  console.log(user.value)
-  const { data, error } = await client
-  .from('Messages')
-  .insert([
-    { message: newMessage, sendByUser: user.value.id },
-  ])
-  if (error) {
-    console.log('error', error)
-    return
-  }
+async function onSendMessage(){
+    // Todo: clean up alert
+    if(!Profile || !user.value) {
+      alert('Something went wrong !')
+      return 
+    }
+    if(!newMessage) {
+      alert('Please enter a message !')
+      return 
+    }
+    const result = await sendMessage(newMessage, user.value.id, Profile.id)
+    // Add the message to the messages array
+    console.log(result)
+    if(result) {
+      alert('Something went wrong !')
+      return 
+    }
+    if(!messages.value) {
+      messages.value = [{Profiles: {name: Profile.name}, message: newMessage, created_at: new Date()}]
+    } else {
+      messages.value.push({Profiles: {name: Profile.name}, message: newMessage, created_at: new Date()})
 
-  // Add the message to the messages array
-  if(!messages.value) {
-    messages.value = [{sendByUser: user.value?.id, message: newMessage}]
-  } else {
-    messages.value.push({sendByUser: user.value?.id, message: newMessage})
-
-  }
+    }
 
   // Clear the input field
-  newMessage = ''
+  newMessage = ''  
+
 }
-
-
 </script>
 
 <template>
@@ -72,7 +94,7 @@ async function sendMessage() {
       <div v-for="message in messages" :key="message.id" class="messages flex py-2">
         <div class="sender flex-0 max-w-xs p-1">
           <p class="text-white">
-            {{ message.sendByUser }}
+            {{ message.Profiles.name ? message.Profiles.name : 'Anonymous' }}
           </p>
           <p>
             12:00
@@ -85,7 +107,7 @@ async function sendMessage() {
         </div>
       </div>
     </div>
-    <form class="flex" @submit.prevent="sendMessage">
+    <form class="flex" @submit.prevent="onSendMessage">
       <input class="flex-1 p-2" type="text" v-model="newMessage" />
       <button class="p-2 bg-blue-500 text-white" type="submit">Send</button>
     </form>
