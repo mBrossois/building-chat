@@ -1,48 +1,65 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 const client = useSupabaseClient()
+const user = useSupabaseUser()
 
-// Check if user is allowed to access this page
-const { data } = await useAsyncData('Messages', async () => {
-  const { data } = await client.from('Messages').select('*').range(0, 10)
-  return data
+// Get the messages from the database
+// TODO: add users (email) to the messages
+let { data: Messages, error } = await client
+  .from('Messages')
+  .select(`
+    created_at, 
+    message,
+    sendByUser
+  `)
+  .range(0, 10)
+  if(error) {
+    console.log('error', error)
+  }
+
+// Subscribe to changes in the Messages table
+const MessagesChannel = client.channel('custom-all-channel')
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'Messages' },
+    (payload) => {
+      console.log('Change received!', payload)
+    }
+  )
+  .subscribe()
+
+// Unsubscribe when user left the page
+onUnmounted(() => {
+  client.removeChannel(MessagesChannel)
 })
 
-console.log(data)
-// Connect to supabSase
-// const client = useSupabaseClient()
-// console.log(client)
-
-
-// Get the messages send to the chat from supabase
-// const { data: restaurant } = await useAsyncData('restaurant', async () => {
-//   const { data } = await client.from('restaurants').select('name, location').eq('name', 'My Restaurant Name').single()
-//   return data
-
-// mock data for messages
-const messages = ref([
-  {
-    id: 0,
-    s : 'Mark',
-    m : 'Hey'
-  },
-  {
-    id: 1,
-    s : 'Jimmy',
-    m : 'Hey'
-  },
-  {
-    id: 2,
-    s : 'Emma',
-    m : 'Hello'
-  }
-])
+// Create a ref to store the messages
+const messages = ref(Messages)
 
 let newMessage = ''
 
 // Function to send messages
-const sendMessage = () => {
-  messages.value.push({id: messages.value.length,s: 'Me', m: newMessage})
+async function sendMessage() {
+  console.log(user.value)
+  const { data, error } = await client
+  .from('Messages')
+  .insert([
+    { message: newMessage, sendByUser: user.value.id },
+  ])
+  if (error) {
+    console.log('error', error)
+    return
+  }
+
+  // Add the message to the messages array
+  if(!messages.value) {
+    messages.value = [{sendByUser: user.value?.id, message: newMessage}]
+  } else {
+    messages.value.push({sendByUser: user.value?.id, message: newMessage})
+
+  }
+
+  // Clear the input field
   newMessage = ''
 }
 
@@ -55,7 +72,7 @@ const sendMessage = () => {
       <div v-for="message in messages" :key="message.id" class="messages flex py-2">
         <div class="sender flex-0 max-w-xs p-1">
           <p class="text-white">
-            {{ message.s }}
+            {{ message.sendByUser }}
           </p>
           <p>
             12:00
@@ -63,7 +80,7 @@ const sendMessage = () => {
         </div>
         <div class="flex message divide-white bg-white flex-0 p-1 rounded-full">
           <p class="message-text text-black">
-            {{ message.m }}
+            {{ message.message }}
           </p>
         </div>
       </div>
