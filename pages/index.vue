@@ -12,7 +12,7 @@ let { data: Profile, error: profileErrror } = await client
     id, 
     name
   `)
-  .eq('user_id', '492547b8-9065-47f6-96b4-08c88a036210')
+  .eq('user_id', user.value?.id)
   .single()
   if(profileErrror) {
     alert('Something went wrong !')
