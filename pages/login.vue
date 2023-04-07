@@ -43,7 +43,13 @@ watch(user, () => {
 </script>
 
 <template>
-  <input type="text" v-model="email" placeholder="Email">
-  <button @click="signInWithEmail()" class="inline-flex min-w-32 justify-center rounded-md bg-white py-2 px-4 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0">Login with email</button>
-  <button @click="signInDefault('github')" class="inline-flex min-w-32 justify-center rounded-md bg-white py-2 px-4 text-gray-500 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0">Login with GitHub</button>
+  <div class="flex flex-col items-center pt-16">
+    <div>
+      <Icon name="ic:outline-email" class="h-9 w-9 absolute ml-2 mt-0.5"></Icon>
+      <input type="text" v-model="email" placeholder="Fill your e-mail adress in" class="w-80 h-11 bg-background-color text-black indent-14 placeholder:text-black border-b" >
+    </div>
+    <DefaultButton label="Continue" @click="signInWithEmail()"></DefaultButton>
+    <p>or</p>
+    <DefaultButton label="Continue with GitHub" @click="signInDefault('github')"></DefaultButton>
+  </div>
 </template>

@@ -2,11 +2,11 @@ module.exports = {
     theme: {
       colors: {
         // Configure your color palette here
-        'pink-dark': '#C74E87',
-        'brown-dark': '#AA3F1D',
-        'orange': '#FBC471',
-        'paper-color': '#F5EBD0',
-        'purple': '#E4C1F9',
+        'light-pink-color': '#FDB0D4',
+        'header-color': '#4D1831',
+        'main-color': '#B13871',
+        'background-color': '#FAF4E6',
+        'lila-color': '#E4C1F9',
         'white': '#FFFFFF',
         'black': '#000000',
       }
