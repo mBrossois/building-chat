@@ -6,3 +6,12 @@ export enum routes {
     '/profile' = 'Profile',
     '/settings' = 'Settings'
 }
+
+export const showMenuOnRoutes = [
+    '/',
+    '/neighbours',
+    '/profile',
+    '/settings'
+]
+
+

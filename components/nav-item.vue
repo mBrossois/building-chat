@@ -11,9 +11,9 @@ const props = defineProps({
 })
 const emits = defineEmits(['onClick'])
 
-const router = useRouter()
+const route = useRoute()
 
-const activeRoute = ref(routes[router.currentRoute.value.path])
+const activeRoute = ref(routes[route.path])
 
 
 async function closeMenu() {
