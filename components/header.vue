@@ -1,5 +1,5 @@
 <template>
-    <div class="flex bg-brown-dark text-white h-14 items-center">
+    <div class="flex bg-header-color text-white h-14 items-center">
         <h1 class="text-2xl ml-5">Building chat</h1>
         <h2 class="text-lg ml-7 grow"> {{ activeRoute }}</h2>
         <Icon v-if="showOnRoute" @click="openMenu" name="ic:baseline-menu" class="h-10 w-10 justify-self-end mr-2"></Icon>

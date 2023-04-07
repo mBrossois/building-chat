@@ -1,5 +1,5 @@
 <template>
-    <button @click="closeMenu()" :class="{'font-bold': activeRoute === text}" class="min-w-full py-2 px-4 mb-4 text-black text-left text-2xl border-b-2 border-solid border-black hover:bg-gray-50 focus:outline-offset-0">{{ text }}</button>
+    <button @click="closeMenu()" :class="{'font-bold': activeRoute === text}" class="min-w-full py-2 px-4 mb-4 text-white text-left text-2xl border-b border-solid border-white hover:bg-gray-50 focus:outline-offset-0">{{ text }}</button>
 </template>
 
 <script setup lang="ts">
@@ -15,6 +15,9 @@ const route = useRoute()
 
 const activeRoute = ref(routes[route.path])
 
+watchEffect(() => {
+    activeRoute.value = routes[route.path]
+})
 
 async function closeMenu() {
     emits('onClick')
