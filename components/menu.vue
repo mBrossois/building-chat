@@ -9,9 +9,7 @@
 </template>
 
 <script setup lang="ts">
-    import { useMenuStore } from '~~/store/menu';
-    const router = useRouter()
-
+    import { useMenuStore } from '~/store/menu';
     // Check if menu is open
     function isOpen(): boolean {
         return useMenuStore().isOpen
