@@ -1,5 +1,5 @@
 <template>
-    <div v-show="isOpen()" class="menu absolute h-full w-full bg-blue-lightest px-2 pt-5">
+    <div v-show="isOpen()" class="menu absolute h-full w-full bg-paper-color px-2 pt-5">
         <NavItem text="Messages"></NavItem>
         <NavItem text="Neighbours"></NavItem>
         <NavItem text="Profile"></NavItem>
