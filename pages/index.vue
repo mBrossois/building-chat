@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen">
-    <div  class="chat h-5/6 bg-blue-main overflow-y-scroll ">
+    <div  class="chat h-5/6 bg-orange overflow-y-scroll ">
       <div v-for="message in messages" :key="message.id" class="messages flex py-2">
         <div class="sender flex-0 max-w-xs p-1">
           <p class="text-white">
