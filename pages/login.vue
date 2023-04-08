@@ -44,12 +44,16 @@ watch(user, () => {
 
 <template>
   <div class="flex flex-col items-center pt-16">
-    <div>
+    <div class="mb-5">
       <Icon name="ic:outline-email" class="h-9 w-9 absolute ml-2 mt-0.5"></Icon>
       <input type="text" v-model="email" placeholder="Fill your e-mail adress in" class="w-80 h-11 bg-background-color text-black indent-14 placeholder:text-black border-b" >
     </div>
     <DefaultButton label="Continue" @click="signInWithEmail()"></DefaultButton>
-    <p>or</p>
+    <div class="w-80 my-8 flex items-center justify-between">
+      <hr class="w-36">
+      <p class="text-base">or</p>
+      <hr class="w-36">
+    </div>
     <DefaultButton label="Continue with GitHub" @click="signInDefault('github')"></DefaultButton>
   </div>
 </template>
