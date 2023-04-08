@@ -1,6 +1,5 @@
 <template>
-  <div class="h-screen">
-    <div  class="chat h-5/6 overflow-y-scroll ">
+    <div ref="chat" class="chat h-5/6 overflow-y-scroll ">
       <div v-for="message in messages" :key="message.id" class="messages flex py-2">
         <div class="sender flex-0 max-w-xs p-1">
           <p class="text-white">
@@ -17,11 +16,9 @@
         </div>
       </div>
     </div>
-    <form class="flex" @submit.prevent="onSendMessage">
-      <input class="flex-1 p-2" type="text" v-model="newMessage" />
-      <button class="p-2 bg-blue-500 text-white" type="submit">Send</button>
+    <form class="message h-14 w-screen absolute bottom-0" @submit.prevent="onSendMessage">
+      <input class="w-full h-full" type="text" v-model="newMessage" />
     </form>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +30,13 @@ import { formatDate } from '~~/utils';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
+
+const chat = ref()
+
+onMounted(() => {
+  // Calculate height of the screen minus the height of the header and the message input
+  chat.value.style.height = 'calc(100vh - 56px - 56px)'
+})
 
 let newMessage = ''
 
