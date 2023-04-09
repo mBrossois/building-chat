@@ -1,6 +1,6 @@
 <template>
-    <div ref="chat" class="chat h-5/6 overflow-y-scroll ">
-      <div v-for="message in messages" :key="message.id" class="messages flex py-2">
+    <div ref="chat" class="chat main-screen-height overflow-y-scroll ">
+      <div v-for="message, index in messages" :key="index" class="messages flex py-2">
         <div class="sender flex-0 max-w-xs p-1">
           <p class="text-white">
             {{ message.name ? message.name : 'Anonymous' }}
@@ -16,14 +16,12 @@
         </div>
       </div>
     </div>
-    <form class="message h-14 w-screen absolute bottom-0" @submit.prevent="onSendMessage">
-      <input class="w-full h-full" type="text" v-model="newMessage" />
-    </form>
+    <MessageBox @send-message="onSendMessage"></MessageBox>
 </template>
 
 <script setup lang="ts">
 import { getProfileByUserId } from '~~/api/profile.js';
-import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
+import { sendMessage, getMessages, subscribeToNewMessages, getMessagesLength } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
 import { Messages } from "~~/types/messages"
 import { formatDate } from '~~/utils';
@@ -33,31 +31,31 @@ const user = useSupabaseUser()
 
 const chat = ref()
 
-onMounted(() => {
-  // Calculate height of the screen minus the height of the header and the message input
-  chat.value.style.height = 'calc(100vh - 56px - 56px)'
-})
-
-let newMessage = ''
-
 // get profile data
 const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
+
+// Get length of messages
+const messagesLength = await getMessagesLength()
 
 // Get the messages from the database
 let messagesResponse = await getMessages()
 useMessagesStore().setMessages(messagesResponse as Messages[])
 
-
 // Subscribe to changes in the Messages table
-const MessagesChannel = subscribeToNewMessages(user.value?.id ? user.value.id : '')
+const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
 
 // Create a ref to store the messages
 const messages = useMessagesStore().messages
 
+// Scroll to the bottom of the chat when a new message is added
+watch(messages, () => {
+  chat.value.scrollTop = chat.value.scrollHeight
+})
+
 // Function to send messages
-async function onSendMessage(id: number){
+async function onSendMessage(newMessage: string){
     // Todo: clean up alert
-    if(!profile || !user.value) {
+    if(!profile) {
       alert('Something went wrong !')
       return 
     }
@@ -65,21 +63,17 @@ async function onSendMessage(id: number){
       alert('Please enter a message !')
       return 
     }
-    const result = await sendMessage(newMessage, user.value.id, profile.id)
+    const result = await sendMessage(newMessage, profile.id)
     // Add the message to the messages array
     if(result) {
       alert('Something went wrong !')
       return 
     }
     if(!messages) {
-      useMessagesStore().setMessages([{id: id++ + '', name: profile.name, message: newMessage, created_at: formatDate(new Date())}])
+      useMessagesStore().setMessages([{name: profile.name, message: newMessage, created_at: formatDate(new Date())}])
     } else {
-      useMessagesStore().addNewMessage({id: id++ + '', name: profile.name, message: newMessage, created_at: formatDate(new Date())})
+      useMessagesStore().addNewMessage({name: profile.name, message: newMessage, created_at: formatDate(new Date())})
     }
-
-  // Clear the input field
-  newMessage = ''  
-
 }
 
 // Unsubscribe when user left the page

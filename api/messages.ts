@@ -1,17 +1,18 @@
-import { getProfileByUserId } from './profile';
+import { getProfileByProfileId } from './profile';
 import { useMessagesStore } from '~~/store/messages';
 import { Messages } from '~~/types/messages';
 
 // This is the function that is called when a user sends a message
-export async function sendMessage(newMessage: string, user_id: string, profile_id: string) {
+export async function sendMessage(newMessage: string, profile_id: string) {
     const client = useSupabaseClient()
 
     const { data, error } = await client
     .from('Messages')
     .insert([
-      { message: newMessage, user_id: user_id, profile_id: profile_id},
+      { message: newMessage, profile_id: profile_id},
     ])
     if (error) {
+      console.log(error)
       return "Something went wrong"
     }
     return data
@@ -43,8 +44,22 @@ export async function getMessages() {
   return messages
 }
 
+// Get lenght of messages
+export async function getMessagesLength() {
+  const client = useSupabaseClient()
+
+  const { count, error } = await client
+  .from('Messages')
+  .select('*', { count: 'exact', head: true })
+  if(error) {
+    alert('Something went wrong !')
+    return
+  }
+  return count
+}
+
 // Subscribe to new messages
-export const subscribeToNewMessages = (userId: string) => {
+export const subscribeToNewMessages = (profile_id: string) => {
   const client = useSupabaseClient()
 
   return client.channel('listen-messages-channel')
@@ -52,10 +67,10 @@ export const subscribeToNewMessages = (userId: string) => {
     'postgres_changes',
     { event: '*', schema: 'public', table: 'Messages' },
     async (payload) => {
-      if(payload.new.user_id !== userId) {
+      if(payload.new.profile_id !== profile_id) {
         const newMessage = payload.new as Messages
-        const profile = await getProfileByUserId(newMessage.user_id)
-        useMessagesStore().addNewMessage({id: newMessage.id, created_at: newMessage.created_at, message: newMessage.message, name: profile.name ? profile.name : 'Anonymous' })
+        const profile = await getProfileByProfileId(newMessage.profile_id ? newMessage.profile_id : '')
+        useMessagesStore().addNewMessage({created_at: newMessage.created_at, message: newMessage.message, name: profile ? profile.name : 'Anonymous' })
       }
     }
   )
