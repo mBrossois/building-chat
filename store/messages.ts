@@ -10,20 +10,14 @@ export const useMessagesStore = defineStore('messages', () => {
       }      
     }
 
-    function initialMessages(firstMessages: Array<Message>, seccondMessages: Array<Message>, thirdMessages: Array<Message>) {
-      const messagesForPage = [{
-        page: messagePagination.value.activePage - 2,
-        messages: firstMessages
-      },
-      {
-        page: messagePagination.value.activePage - 1,
-        messages: seccondMessages
-      },
-      {
-        page: messagePagination.value.activePage,
-        messages: thirdMessages
-      }]
-      messages.value = messagesForPage
+    function initialMessages(initialMessages: Array<Message[]>) {
+      for(let i = 0; i < initialMessages.length; i++) {
+        console.log(messagePagination.value.pagesLoaded - i)
+        messages.value.push({
+          page: messagePagination.value.activePage - (messagePagination.value.pagesLoaded - i - 1),
+          messages: initialMessages[i]
+        })
+      }
     }
 
     // Load messages for page
@@ -38,22 +32,22 @@ export const useMessagesStore = defineStore('messages', () => {
 
     // Add new messages to top of the page
     function addMessagesToTopPage(message: Array<Message>) {
-      const lastPage = {
+      const page = {
         page: messagePagination.value.activePage - messagePagination.value.pagesLoaded,
         messages: message
       }
       messagePagination.value.activePage -= 1
-      messages.value.unshift(lastPage)
+      messages.value.unshift(page)
       messages.value.pop()
     }
 
     function addMessagesToBottomPage(message: Array<Message>) {
       messagePagination.value.activePage += 1
-      const lastPage = {
+      const page = {
         page: messagePagination.value.activePage,
         messages: message
       }
-      messages.value.push(lastPage)
+      messages.value.push(page)
       messages.value.shift()
     }
 

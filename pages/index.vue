@@ -2,7 +2,6 @@
     <div ref="chat" class="chat main-screen-height overflow-y-scroll ">
 
       <div ref="messagesBlock" v-for="messageList in messages" :key="messageList.page">
-        {{ messageList.page }}
 
         <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2">
           <div class="sender flex-0 max-w-xs p-1">
@@ -44,17 +43,15 @@ const messagesBlock = ref()
 const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
 
 // Set initial pagination
-const messagesLength = await getMessagesLength()
-useMessagesStore().initialPagination(messagesLength ?? 0)
-const pagination = useMessagesStore().messagePagination
+const pagination = await getInitialPagination()
 
 // Get the messages from the database
-let messagesResponse = await getMessages( pagination.activePage - 2, pagination.itemsPerPage)
-let messagesResponseSecond = await getMessages( pagination.activePage - 1, pagination.itemsPerPage)
-let messagesResponseThird = await getMessages( pagination.activePage, pagination.itemsPerPage)
-
-useMessagesStore().initialMessages(messagesResponse as Array<Message>, messagesResponseSecond as Array<Message>, messagesResponseThird as Array<Message>)
-
+setInitialMessages(pagination).then(() => {
+  nextTick(() => {
+    chat.value.scrollTop = chat.value.scrollHeight
+    console.log(pagination)
+  })
+})
 // // Subscribe to changes in the Messages table
 const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
 
@@ -63,11 +60,12 @@ const messages = useMessagesStore().messages
 
 // Scroll to the bottom of the chat on load
 onMounted(() => {
-  chat.value.scrollTop = chat.value.scrollHeight
+
   // Load new messages when the user scrolls to the top of the chat
   chat.value.onscroll = async () => {
     if(chat.value.scrollTop === 0 && pagination.activePage > pagination.pagesLoaded - 1 ) {
-      let messagesResponseSecond = await getMessages( pagination.activePage - pagination.pagesLoaded, pagination.itemsPerPage)
+      console.log('scrolling to top', messages)
+      let messagesResponseSecond = await getMessages( pagination.activePage - pagination.pagesLoaded , pagination.itemsPerPage)
       useMessagesStore().addMessagesToTopPage(messagesResponseSecond as Array<Message>)
       nextTick(() => {
         scrollToItem()
