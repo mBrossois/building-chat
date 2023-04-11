@@ -12,14 +12,13 @@ export async function sendMessage(newMessage: string, profile_id: string) {
       { message: newMessage, profile_id: profile_id},
     ])
     if (error) {
-      console.log(error)
       return "Something went wrong"
     }
     return data
 }  
 
 // Function to get all messages
-export async function getMessages() {
+export async function getMessages(activePage: number, pageSize: number) {
   const client = useSupabaseClient()
 
   const { data: Messages, error } = await client
@@ -29,7 +28,7 @@ export async function getMessages() {
     message,
     Profiles (name)
   `)
-  .range(0, 10)
+  .range(activePage * pageSize, activePage * pageSize + pageSize)
   if(error) {
     alert('Something went wrong !')
     return 
@@ -70,7 +69,7 @@ export const subscribeToNewMessages = (profile_id: string) => {
       if(payload.new.profile_id !== profile_id) {
         const newMessage = payload.new as Messages
         const profile = await getProfileByProfileId(newMessage.profile_id ? newMessage.profile_id : '')
-        useMessagesStore().addNewMessage({created_at: newMessage.created_at, message: newMessage.message, name: profile ? profile.name : 'Anonymous' })
+        useMessagesStore().addNewMessage({created_at: formatDate(new Date(newMessage.created_at)), message: newMessage.message, name: profile ? profile.name : 'Anonymous' })
       }
     }
   )
