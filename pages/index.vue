@@ -1,59 +1,96 @@
 <template>
-  <div class="h-screen">
-    <div  class="chat h-5/6 overflow-y-scroll ">
-      <div v-for="message in messages" :key="message.id" class="messages flex py-2">
-        <div class="sender flex-0 max-w-xs p-1">
-          <p class="text-white">
-            {{ message.name ? message.name : 'Anonymous' }}
-          </p>
-          <p>
-            {{ message.created_at }}
-          </p>
+    <div ref="chat" class="chat main-screen-height overflow-y-scroll ">
+
+      <div ref="messagesBlock" v-for="messageList in messages" :key="messageList.page">
+
+        <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2">
+          <div class="sender flex-0 max-w-xs p-1">
+            <p class="text-white">
+              {{ message.name ? message.name : 'Anonymous' }}
+            </p>
+            <p>
+              {{ message.created_at }}
+            </p>
+          </div>
+          <div class="flex message divide-white bg-white flex-0 p-1 rounded-full">
+            <p class="message-text text-black">
+              {{ message.message }}
+            </p>
+          </div>
         </div>
-        <div class="flex message divide-white bg-white flex-0 p-1 rounded-full">
-          <p class="message-text text-black">
-            {{ message.message }}
-          </p>
-        </div>
+
       </div>
+
     </div>
-    <form class="flex" @submit.prevent="onSendMessage">
-      <input class="flex-1 p-2" type="text" v-model="newMessage" />
-      <button class="p-2 bg-blue-500 text-white" type="submit">Send</button>
-    </form>
-  </div>
+    <MessageBox @send-message="onSendMessage"></MessageBox>
 </template>
 
 <script setup lang="ts">
 import { getProfileByUserId } from '~~/api/profile.js';
-import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
+import { sendMessage, getMessages, subscribeToNewMessages, getMessagesLength } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
 import { Messages } from "~~/types/messages"
 import { formatDate } from '~~/utils';
+import { Message } from 'esbuild';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
 
-let newMessage = ''
+const chat = ref()
+const messagesBlock = ref()
 
 // get profile data
 const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
 
+// Set initial pagination
+const pagination = await getInitialPagination()
+
 // Get the messages from the database
-let messagesResponse = await getMessages()
-useMessagesStore().setMessages(messagesResponse as Messages[])
-
-
-// Subscribe to changes in the Messages table
-const MessagesChannel = subscribeToNewMessages(user.value?.id ? user.value.id : '')
+setInitialMessages(pagination).then(() => {
+  nextTick(() => {
+    chat.value.scrollTop = chat.value.scrollHeight
+    console.log(pagination)
+  })
+})
+// // Subscribe to changes in the Messages table
+const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
 
 // Create a ref to store the messages
 const messages = useMessagesStore().messages
 
+// Scroll to the bottom of the chat on load
+onMounted(() => {
+
+  // Load new messages when the user scrolls to the top of the chat
+  chat.value.onscroll = async () => {
+    if(chat.value.scrollTop === 0 && pagination.activePage > pagination.pagesLoaded - 1 ) {
+      console.log('scrolling to top', messages)
+      let messagesResponseSecond = await getMessages( pagination.activePage - pagination.pagesLoaded , pagination.itemsPerPage)
+      useMessagesStore().addMessagesToTopPage(messagesResponseSecond as Array<Message>)
+      nextTick(() => {
+        scrollToItem()
+      })
+
+    } 
+    else if(chat.value.scrollTop === chat.value.scrollHeight - chat.value.clientHeight && pagination.activePage < Math.floor(pagination.totalItems / 10) ) {
+      let messagesResponseSecond = await getMessages( pagination.activePage + 1, pagination.itemsPerPage)
+      useMessagesStore().addMessagesToBottomPage(messagesResponseSecond as Array<Message>)
+    }
+  }
+
+})
+
+// On adding new item, keep scroll position on previous item
+function scrollToItem() {
+  const messagesBlockHeight = messagesBlock.value[1].scrollHeight
+  chat.value.scrollTop = chat.value.scrollTop + messagesBlockHeight
+}
+
+
 // Function to send messages
-async function onSendMessage(id: number){
+async function onSendMessage(newMessage: string){
     // Todo: clean up alert
-    if(!profile || !user.value) {
+    if(!profile) {
       alert('Something went wrong !')
       return 
     }
@@ -61,29 +98,24 @@ async function onSendMessage(id: number){
       alert('Please enter a message !')
       return 
     }
-    const result = await sendMessage(newMessage, user.value.id, profile.id)
+    const result = await sendMessage(newMessage, profile.id)
     // Add the message to the messages array
     if(result) {
       alert('Something went wrong !')
       return 
     }
-    if(!messages) {
-      useMessagesStore().setMessages([{id: id++ + '', name: profile.name, message: newMessage, created_at: formatDate(new Date())}])
-    } else {
-      useMessagesStore().addNewMessage({id: id++ + '', name: profile.name, message: newMessage, created_at: formatDate(new Date())})
-    }
-
-  // Clear the input field
-  newMessage = ''  
-
+    await useMessagesStore().addNewMessage({name: profile.name, message: newMessage, created_at: formatDate(new Date())})
+    chat.value.scrollTop = chat.value.scrollHeight
 }
 
-// Unsubscribe when user left the page
+// // Unsubscribe when user left the page
 onUnmounted(() => {
   client.removeChannel(MessagesChannel)
 })
 </script>
 
 <style scoped>
-* {}
+.chat::-webkit-scrollbar {
+  display: none;  
+}
 </style>
