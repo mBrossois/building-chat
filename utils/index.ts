@@ -8,3 +8,8 @@ export function formatDate(date: Date) {
     
     return `${hours}-${minutes} ${day}-${month}-${year}`;
 }
+
+//  Get key based on value from enum
+export function getKeyByValue(object: any, value: any) {
+    return Object.keys(object).find(key => object[key] === value);
+}

@@ -16,3 +16,11 @@ export interface MessagePagination {
     totalItems: number
     pagesLoaded: number
 }
+
+export interface Emoticon {
+    i: string
+    n: string
+    r: string
+    t: string
+    u: string
+}
