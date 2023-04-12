@@ -20,7 +20,7 @@ export async function sendMessage(newMessage: string, profile_id: string) {
 // Function to get all messages
 export async function getMessages(activePage: number, pageSize: number) {
   const client = useSupabaseClient()
-  console.log(activePage, pageSize)
+  
   const { data: Messages, error } = await client
   .from('Messages')
   .select(`

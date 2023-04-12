@@ -12,6 +12,7 @@ const props = defineProps({
 const emits = defineEmits(['onClick'])
 
 const route = useRoute()
+const router = useRouter()
 
 const activeRoute = ref(routes[route.path])
 
@@ -22,7 +23,17 @@ watchEffect(() => {
 async function closeMenu() {
     emits('onClick')
     if(!props.preventDefault) {
+        goTo(getKeyByValue(routes, props.text)!)
+        console.log(props.text)        
+        console.log(routes[props.text])
+        console.log(getKeyByValue(routes, props.text))
         useMenuStore().toggleMenu()
+
     }
+}
+
+// Redirect to other page
+function goTo(route: string) {
+    router.push(route)
 }
 </script>

@@ -1,5 +1,6 @@
 export enum routes {
-    '/' = 'Messages' ,
+    '/' = 'Home' ,
+    '/messages' = 'Messages' ,
     '/neighbours' = 'Neighbours',
     '/login' = 'login',
     '/register' = 'register',
@@ -9,6 +10,7 @@ export enum routes {
 
 export const showMenuOnRoutes = [
     '/',
+    '/messages',
     '/neighbours',
     '/profile',
     '/settings'

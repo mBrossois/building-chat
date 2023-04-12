@@ -1,5 +1,6 @@
 <template>
     <div v-show="isOpen()" class="menu absolute h-full w-full bg-main-color px-2 pt-5">
+        <NavItem text="Home"></NavItem>
         <NavItem text="Messages"></NavItem>
         <NavItem text="Neighbours"></NavItem>
         <NavItem text="Profile"></NavItem>
@@ -14,12 +15,7 @@
     function isOpen(): boolean {
         return useMenuStore().isOpen
     }
-
-    // Redirect to other page
-    function goTo(route: string) {
-        router.push(route)
-    }
-
+    
     // Log out of supabase
     async function logOut() {
         await useSupabaseAuthClient().auth.signOut()
