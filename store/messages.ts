@@ -12,7 +12,6 @@ export const useMessagesStore = defineStore('messages', () => {
 
     function initialMessages(initialMessages: Array<Message[]>) {
       for(let i = 0; i < initialMessages.length; i++) {
-        console.log(messagePagination.value.pagesLoaded - i)
         messages.value.push({
           page: messagePagination.value.activePage - (messagePagination.value.pagesLoaded - i - 1),
           messages: initialMessages[i]

@@ -24,9 +24,6 @@ async function closeMenu() {
     emits('onClick')
     if(!props.preventDefault) {
         goTo(getKeyByValue(routes, props.text)!)
-        console.log(props.text)        
-        console.log(routes[props.text])
-        console.log(getKeyByValue(routes, props.text))
         useMenuStore().toggleMenu()
 
     }

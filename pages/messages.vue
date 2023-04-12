@@ -48,7 +48,6 @@ const pagination = await getInitialPagination()
 setInitialMessages(pagination).then(() => {
   nextTick(() => {
     chat.value.scrollTop = chat.value.scrollHeight
-    console.log(pagination)
   })
 })
 // // Subscribe to changes in the Messages table
