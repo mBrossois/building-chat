@@ -5,9 +5,7 @@
 
         <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2">
           <div class="sender flex-0 max-w-xs p-1">
-            <p class="text-white">
-              {{ message.name ? message.name : 'Anonymous' }}
-            </p>
+            <ProfilePicture :scale=".75"></ProfilePicture>
           </div>
           <div class="flex message divide-white bg-white flex-0 p-1 rounded-full">
             <p class="message-text text-black">
