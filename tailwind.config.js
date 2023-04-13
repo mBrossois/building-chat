@@ -9,6 +9,8 @@ module.exports = {
         'lila-color': '#E4C1F9',
         'white': '#FFFFFF',
         'black': '#000000',
+        'window-bg': '#EDF3FF',
+        'transparent': '#00000000'
       }
     }
   }

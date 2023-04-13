@@ -8,9 +8,6 @@
             <p class="text-white">
               {{ message.name ? message.name : 'Anonymous' }}
             </p>
-            <p>
-              {{ message.created_at }}
-            </p>
           </div>
           <div class="flex message divide-white bg-white flex-0 p-1 rounded-full">
             <p class="message-text text-black">
@@ -30,7 +27,7 @@ import { getProfileByUserId } from '~~/api/profile.js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
 import { formatDate } from '~~/utils';
-import { Message } from 'esbuild';
+import { Messages } from '~~/types/messages';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
@@ -39,22 +36,60 @@ const chat = ref()
 const messagesBlock = ref()
 
 // get profile data
-const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
+// const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
 
-// Set initial pagination
-const pagination = await getInitialPagination()
+// // Set initial pagination
+// const pagination = await getInitialPagination()
 
-// Get the messages from the database
-setInitialMessages(pagination).then(() => {
-  nextTick(() => {
-    chat.value.scrollTop = chat.value.scrollHeight
-  })
-})
-// // Subscribe to changes in the Messages table
-const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
+// // Get the messages from the database
+// setInitialMessages(pagination).then(() => {
+//   nextTick(() => {
+//     chat.value.scrollTop = chat.value.scrollHeight
+//   })
+// })
+// // // Subscribe to changes in the Messages table
+// const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
 
-// Create a ref to store the messages
-const messages = useMessagesStore().messages
+// // Create a ref to store the messages
+// const messages = useMessagesStore().messages
+let messages: Array<Messages> =[
+  {
+    page: 0,
+    messages: [
+      {
+        message: 'Hello',
+        created_at: '03:24 21-09-1992',
+        name: 'Mark de Neut Brossois'
+      }
+    ]
+  },
+  {
+    page: 1,
+    messages: [
+      {
+        message: 'Hello',
+        created_at: '03:24 21-09-1992',
+        name: 'Mark de Neut Brossois'
+      }
+    ]
+  }
+]
+
+for(let i = 0; i < 30; i++) {
+  if(i < 15) {
+    messages[0].messages.push({
+      message: `Hello ${i}`,
+      created_at: '03:24 21-09-1992',
+      name: 'Mark de Neut Brossois'
+    })
+  } else {
+    messages[1].messages.push({
+      message: `Hello ${i}`,
+      created_at: '03:24 21-09-1992',
+      name: 'Mark de Neut Brossois'
+    })
+  }
+}
 
 // Scroll to the bottom of the chat on load
 onMounted(() => {
@@ -106,9 +141,9 @@ async function onSendMessage(newMessage: string){
 }
 
 // // Unsubscribe when user left the page
-onUnmounted(() => {
-  client.removeChannel(MessagesChannel)
-})
+// onUnmounted(() => {
+//   client.removeChannel(MessagesChannel)
+// })
 </script>
 
 <style scoped>
