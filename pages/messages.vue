@@ -3,17 +3,13 @@
 
       <div ref="messagesBlock" v-for="messageList in messages" :key="messageList.page">
 
-        <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2">
+        <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2 px-4">
           <div class="sender flex-0 max-w-xs p-1">
-            <p class="text-white">
-              {{ message.name ? message.name : 'Anonymous' }}
-            </p>
-            <p>
-              {{ message.created_at }}
-            </p>
+            <ProfilePicture :scale=".65"></ProfilePicture>
           </div>
-          <div class="flex message divide-white bg-white flex-0 p-1 rounded-full">
-            <p class="message-text text-black">
+          <div class="flex message divide-white flex-0 p-1 w-full ">
+            <div class="triangle-conversation border-solid border-r-black border-r-[12px] border-y-transparent border-y-4 border-l-0 h-min mt-11"></div>
+            <p class="message-text text-white bg-black w-full">
               {{ message.message }}
             </p>
           </div>
@@ -30,7 +26,7 @@ import { getProfileByUserId } from '~~/api/profile.js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
 import { formatDate } from '~~/utils';
-import { Message } from 'esbuild';
+import { Messages, addToMessagesMock } from '~~/types/messages';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
@@ -41,20 +37,21 @@ const messagesBlock = ref()
 // get profile data
 const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
 
-// Set initial pagination
+// // Set initial pagination
 const pagination = await getInitialPagination()
 
-// Get the messages from the database
+// // Get the messages from the database
 setInitialMessages(pagination).then(() => {
   nextTick(() => {
     chat.value.scrollTop = chat.value.scrollHeight
   })
 })
-// // Subscribe to changes in the Messages table
+// // // Subscribe to changes in the Messages table
 const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
 
-// Create a ref to store the messages
+// // Create a ref to store the messages
 const messages = useMessagesStore().messages
+// let messages = addToMessagesMock()
 
 // Scroll to the bottom of the chat on load
 onMounted(() => {
