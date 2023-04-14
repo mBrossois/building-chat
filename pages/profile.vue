@@ -4,6 +4,6 @@
 <template>
   <div>
     <h1>Your profile</h1>
-    <ProfilePicture :scale=".75"></ProfilePicture>
+    <ProfilePicture></ProfilePicture>
   </div>
 </template>
