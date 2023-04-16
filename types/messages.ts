@@ -2,6 +2,7 @@ export interface Message {
     created_at: string
     message: string
     name: string
+    floor?: number
     profile_id?: string
 }
 

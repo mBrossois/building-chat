@@ -3,16 +3,8 @@
 
       <div ref="messagesBlock" v-for="messageList in messages" :key="messageList.page">
 
-        <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2 px-4">
-          <div class="sender flex-0 max-w-xs p-1">
-            <ProfilePicture :scale=".65"></ProfilePicture>
-          </div>
-          <div class="flex message divide-white flex-0 p-1 w-full ">
-            <div class="triangle-conversation border-solid border-r-black border-r-[12px] border-y-transparent border-y-4 border-l-0 h-min mt-11"></div>
-            <p class="message-text text-white bg-black w-full">
-              {{ message.message }}
-            </p>
-          </div>
+        <div v-for="message, index in messageList.messages" :key="index" class="messages py-2 px-4">
+          <MessageOnPage :profile="profile" :message="message"></MessageOnPage>
         </div>
 
       </div>
