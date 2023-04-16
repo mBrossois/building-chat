@@ -18,7 +18,7 @@ import { getProfileByUserId } from '~~/api/profile.js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
 import { formatDate } from '~~/utils';
-import { Messages, addToMessagesMock } from '~~/types/messages';
+import { Message } from '~~/types/messages';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
@@ -58,7 +58,7 @@ onMounted(() => {
       })
 
     } 
-    else if(chat.value.scrollTop === chat.value.scrollHeight - chat.value.clientHeight && pagination.activePage < Math.floor(pagination.totalItems / 10) ) {
+    else if(Math.ceil(chat.value.scrollTop) >= chat.value.scrollHeight - chat.value.clientHeight && pagination.activePage < Math.floor(pagination.totalItems / 10) ) {
       let messagesResponseSecond = await getMessages( pagination.activePage + 1, pagination.itemsPerPage)
       useMessagesStore().addMessagesToBottomPage(messagesResponseSecond as Array<Message>)
     }
