@@ -40,6 +40,7 @@ export async function getMessages(activePage: number, pageSize: number) {
       message: message.message,
       name: message.Profiles.name,
       floor: message.Profiles.floor,
+      profile_id: message.profile_id
     }
   })
 
