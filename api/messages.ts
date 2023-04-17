@@ -29,14 +29,14 @@ export async function getMessages(activePage: number, pageSize: number) {
     profile_id,
     Profiles (name, floor)
   `)
-  .range(activePage * pageSize, activePage * pageSize + pageSize)
+  .range(activePage * pageSize, activePage * pageSize + pageSize - 1)
   if(error) {
     alert('Something went wrong !')
     return 
   }
   const messages = Messages.map((message: any) => {
     return {
-      created_at: formatDate(new Date(message.created_at)),
+      created_at: message.created_at,
       message: message.message,
       name: message.Profiles.name,
       floor: message.Profiles.floor,
@@ -73,7 +73,7 @@ export const subscribeToNewMessages = (profile_id: string) => {
       if(payload.new.profile_id !== profile_id) {
         const newMessage = payload.new as Messages
         const profile = await getProfileByProfileId(newMessage.profile_id ? newMessage.profile_id : '')
-        useMessagesStore().addNewMessage({created_at: formatDate(new Date(newMessage.created_at)), message: newMessage.message, name: profile ? profile.name : 'Anonymous', floor: profile.floor })
+        useMessagesStore().addNewMessage({created_at: newMessage.created_at, message: newMessage.message, name: profile ? profile.name : 'Anonymous', floor: profile.floor })
       }
     }
   )
