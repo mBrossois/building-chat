@@ -20,5 +20,8 @@ export default defineNuxtConfig({
         public: {
             SITE_URL: process.env.SITE_URL,
         }
-    }
+    },
+    css: [
+        '~/assets/css/global.css'
+    ]
 })
