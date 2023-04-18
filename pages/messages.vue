@@ -1,18 +1,10 @@
 <template>
     <div ref="chat" class="chat main-screen-height overflow-y-scroll ">
 
-      <div ref="messagesBlock" v-for="messageList in messages" :key="messageList.page">
-
-        <div v-for="message, index in messageList.messages" :key="index" class="messages flex py-2 px-4">
-          <div class="sender flex-0 max-w-xs p-1">
-            <ProfilePicture :scale=".65"></ProfilePicture>
-          </div>
-          <div class="flex message divide-white flex-0 p-1 w-full ">
-            <div class="triangle-conversation border-solid border-r-black border-r-[12px] border-y-transparent border-y-4 border-l-0 h-min mt-11"></div>
-            <p class="message-text text-white bg-black w-full">
-              {{ message.message }}
-            </p>
-          </div>
+      <div ref="messagesBlock" v-for="messageList, messageListIndex in messages" :key="messageList.page">
+        <div v-for="message, index in messageList.messages" :key="index" class="messages py-2 px-4">
+          <MessageTimeValue :previous_created_at="getPreviousMessageDate(index, messageListIndex)" :created_at="message.created_at"></MessageTimeValue>
+          <MessageOnPage :profile="profile" :message="message"></MessageOnPage>
         </div>
 
       </div>
@@ -25,8 +17,8 @@
 import { getProfileByUserId } from '~~/api/profile.js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
-import { formatDate } from '~~/utils';
-import { Messages, addToMessagesMock } from '~~/types/messages';
+import { Message } from '~~/types/messages';
+import MessageTimeValue from '~~/components/message-time-value.vue';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
@@ -66,7 +58,7 @@ onMounted(() => {
       })
 
     } 
-    else if(chat.value.scrollTop === chat.value.scrollHeight - chat.value.clientHeight && pagination.activePage < Math.floor(pagination.totalItems / 10) ) {
+    else if(Math.ceil(chat.value.scrollTop) >= chat.value.scrollHeight - chat.value.clientHeight && pagination.activePage < Math.floor(pagination.totalItems / 10) ) {
       let messagesResponseSecond = await getMessages( pagination.activePage + 1, pagination.itemsPerPage)
       useMessagesStore().addMessagesToBottomPage(messagesResponseSecond as Array<Message>)
     }
@@ -76,10 +68,23 @@ onMounted(() => {
 
 // On adding new item, keep scroll position on previous item
 function scrollToItem() {
-  const messagesBlockHeight = messagesBlock.value[1].scrollHeight
-  chat.value.scrollTop = chat.value.scrollTop + messagesBlockHeight
+    const messagesBlockHeight = messagesBlock.value[2].scrollHeight
+    chat.value.scrollTop = chat.value.scrollTop + messagesBlockHeight
 }
 
+// Return date from the previous message
+function getPreviousMessageDate(messageIndex: number, messageRowIndex: number) {
+  if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page === 0) {
+    return undefined
+  }
+  if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page !== 0) {
+    return messages[messageRowIndex].messages[messageIndex].created_at
+  }
+  if(messageIndex === 0) {
+    return messages[messageRowIndex - 1].messages[pagination.itemsPerPage - 1].created_at
+  }
+  return messages[messageRowIndex].messages[messageIndex - 1].created_at
+}
 
 // Function to send messages
 async function onSendMessage(newMessage: string){
@@ -98,7 +103,7 @@ async function onSendMessage(newMessage: string){
       alert('Something went wrong !')
       return 
     }
-    await useMessagesStore().addNewMessage({name: profile.name, message: newMessage, created_at: formatDate(new Date())})
+    await useMessagesStore().addNewMessage({name: profile.name, message: newMessage, created_at: new Date().toString()})
     chat.value.scrollTop = chat.value.scrollHeight
 }
 
