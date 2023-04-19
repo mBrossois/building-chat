@@ -1,5 +1,7 @@
 <template>
-    <EmojiPicker v-if="isEPOpen" disable-skin-tones class="absolute bottom-16 left-1" :native="true" @select="onSelectEmoji" />
+    <div v-if="isEPOpen === true && status === 'ready'">
+        <VueEmojiPicker disable-skin-tones class="absolute bottom-16 left-1" :native="true" @select="onSelectEmoji" />
+    </div>
 
     <form class="message h-14 w-screen absolute bottom-0" @submit.prevent="onSendMessage">
 
@@ -10,11 +12,9 @@
 </template>
 
 <script setup lang="ts">
-// import picker compopnent
-import EmojiPicker from 'vue3-emoji-picker'
-
-// // import css
 import 'vue3-emoji-picker/css'
+// import VueEmojiPicker from 'vue3-emoji-picker'
+
 import { Emoticon } from '~/types/messages'
 
 const props = defineProps<{
@@ -24,6 +24,10 @@ const props = defineProps<{
 const emits = defineEmits(['send-message'])
 let newMessage = ref('')
 let isEPOpen = ref(false)
+let status = ref('init')
+
+const { $VueEmojiPicker } = useNuxtApp()
+const VueEmojiPicker = $VueEmojiPicker
 
 function toggleEmojiPicker() {
     isEPOpen.value = !isEPOpen.value
@@ -44,4 +48,12 @@ function onSendMessage() {
         newMessage.value = ''
     }
 }
+
+onMounted(() => {
+    // Focus the input
+    nextTick(() => {
+        console.log('nuxtApp', $VueEmojiPicker)
+        status.value = 'ready'
+    })
+})
 </script>
