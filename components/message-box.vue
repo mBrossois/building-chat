@@ -52,7 +52,6 @@ function onSendMessage() {
 onMounted(() => {
     // Focus the input
     nextTick(() => {
-        console.log('nuxtApp', $VueEmojiPicker)
         status.value = 'ready'
     })
 })

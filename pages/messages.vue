@@ -27,19 +27,21 @@ const chat = ref()
 const messagesBlock = ref()
 
 // get profile data
-const profile = await getProfileByUserId(user.value?.id ? user.value.id : '') 
+const profile = await getProfileByUserId(client, user.value?.id ? user.value.id : '') 
 
 // // Set initial pagination
 const pagination = await getInitialPagination()
 
 // // Get the messages from the database
-setInitialMessages(pagination).then(() => {
+setInitialMessages(client, pagination).then(() => {
   nextTick(() => {
-    chat.value.scrollTop = chat.value.scrollHeight
+    if(chat.value && chat.value.scrollHeight) {
+      chat.value.scrollTop = chat.value.scrollHeight
+    }
   })
 })
 // // // Subscribe to changes in the Messages table
-const MessagesChannel = subscribeToNewMessages(profile?.id ? profile.id : '')
+const MessagesChannel = subscribeToNewMessages(client, profile?.id ? profile.id : '')
 
 // // Create a ref to store the messages
 const messages = useMessagesStore().messages
@@ -51,7 +53,7 @@ onMounted(() => {
   // Load new messages when the user scrolls to the top of the chat
   chat.value.onscroll = async () => {
     if(chat.value.scrollTop === 0 && pagination.activePage > pagination.pagesLoaded - 1 ) {
-      let messagesResponseSecond = await getMessages( pagination.activePage - pagination.pagesLoaded , pagination.itemsPerPage)
+      let messagesResponseSecond = await getMessages(client, pagination.activePage - pagination.pagesLoaded , pagination.itemsPerPage)
       useMessagesStore().addMessagesToTopPage(messagesResponseSecond as Array<Message>)
       nextTick(() => {
         scrollToItem()
@@ -59,7 +61,7 @@ onMounted(() => {
 
     } 
     else if(Math.ceil(chat.value.scrollTop) >= chat.value.scrollHeight - chat.value.clientHeight && pagination.activePage < Math.floor(pagination.totalItems / 10) ) {
-      let messagesResponseSecond = await getMessages( pagination.activePage + 1, pagination.itemsPerPage)
+      let messagesResponseSecond = await getMessages(client, pagination.activePage + 1, pagination.itemsPerPage)
       useMessagesStore().addMessagesToBottomPage(messagesResponseSecond as Array<Message>)
     }
   }
@@ -97,7 +99,7 @@ async function onSendMessage(newMessage: string){
       alert('Please enter a message !')
       return 
     }
-    const result = await sendMessage(newMessage, profile.id)
+    const result = await sendMessage(client, newMessage, profile.id)
     // Add the message to the messages array
     if(result) {
       alert('Something went wrong !')
