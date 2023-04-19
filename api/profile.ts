@@ -1,6 +1,5 @@
 // Get profile by user id
-export async function getProfileByUserId(userId: string) {
-    const client = useSupabaseClient()
+export async function getProfileByUserId(client: any, userId: string) {
 
     const { data: Profile, error: profileErrror } = await client
     .from('Profiles')

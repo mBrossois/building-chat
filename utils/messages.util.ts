@@ -9,10 +9,10 @@ export async function getInitialPagination() {
     return useMessagesStore().messagePagination
 }
 
-export async function setInitialMessages(pagination: MessagePagination) {
+export async function setInitialMessages(client:any, pagination: MessagePagination) {
     let messages = []
     for(let i = pagination.pagesLoaded; i > 0; i--) {
-        messages.push(await getMessages( pagination.activePage - (i - 1), pagination.itemsPerPage))
+        messages.push(await getMessages(client, pagination.activePage - (i - 1), pagination.itemsPerPage))
     }
     useMessagesStore().initialMessages(messages as Array<Message[]>)
 }
