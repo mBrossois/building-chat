@@ -9,6 +9,11 @@
 
         </div>
       </div>
+
+      <div v-if="status === 'loading'" class="flex justify-center">
+        <Loading></Loading>
+      </div>
+
     </div>
     <MessageBox :icon-before="'ic:round-insert-emoticon'" :icon-after="'ic:baseline-send'" @send-message="onSendMessage"></MessageBox>
 </template>
@@ -27,7 +32,7 @@ const chat = ref()
 const messagesBlock = ref()
 
 // Set state
-const status = ref('init')
+const status = ref('loading')
 
 // get profile data
 const profile = await getProfileByUserId(client, user.value?.id ? user.value.id : '') 
@@ -81,7 +86,8 @@ function scrollToItem() {
 
 // Return date from the previous message
 function getPreviousMessageDate(messageIndex: number, messageRowIndex: number) {
-  if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page === 0) {
+  if(status.value === 'ready') {
+    if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page === 0) {
     return undefined
   }
   if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page !== 0) {
@@ -91,6 +97,7 @@ function getPreviousMessageDate(messageIndex: number, messageRowIndex: number) {
     return messages[messageRowIndex - 1].messages[pagination.itemsPerPage - 1].created_at
   }
   return messages[messageRowIndex].messages[messageIndex - 1].created_at
+  }
 }
 
 // Function to send messages
