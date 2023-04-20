@@ -1,14 +1,14 @@
 <template>
     <div ref="chat" class="chat main-screen-height overflow-y-scroll ">
+      <div v-if="status === 'ready'">
+        <div ref="messagesBlock" v-for="messageList, messageListIndex in messages" :key="messageList.page">
+          <div v-for="message, index in messageList.messages" :key="index" class="messages py-2 px-4">
+            <MessageTimeValue :previous_created_at="getPreviousMessageDate(index, messageListIndex)" :created_at="message.created_at"></MessageTimeValue>
+            <MessageOnPage :profile="profile" :message="message"></MessageOnPage>
+          </div>
 
-      <div ref="messagesBlock" v-for="messageList, messageListIndex in messages" :key="messageList.page">
-        <div v-for="message, index in messageList.messages" :key="index" class="messages py-2 px-4">
-          <MessageTimeValue :previous_created_at="getPreviousMessageDate(index, messageListIndex)" :created_at="message.created_at"></MessageTimeValue>
-          <MessageOnPage :profile="profile" :message="message"></MessageOnPage>
         </div>
-
       </div>
-
     </div>
     <MessageBox :icon-before="'ic:round-insert-emoticon'" :icon-after="'ic:baseline-send'" @send-message="onSendMessage"></MessageBox>
 </template>
@@ -25,6 +25,9 @@ const user = useSupabaseUser()
 
 const chat = ref()
 const messagesBlock = ref()
+
+// Set state
+const status = ref('init')
 
 // get profile data
 const profile = await getProfileByUserId(client, user.value?.id ? user.value.id : '') 
@@ -65,6 +68,8 @@ onMounted(() => {
       useMessagesStore().addMessagesToBottomPage(messagesResponseSecond as Array<Message>)
     }
   }
+
+  status.value = 'ready'
 
 })
 
