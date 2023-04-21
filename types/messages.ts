@@ -1,4 +1,5 @@
 export interface Message {
+    id: string
     created_at: string
     message: string
     name: string

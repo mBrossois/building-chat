@@ -3,7 +3,7 @@
       <div v-if="status === 'ready'">
         <div ref="messagesBlock" v-for="messageList, messageListIndex in messages" :key="messageList.page">
           <div v-for="message, index in messageList.messages" :key="index" class="messages py-2 px-4">
-            <MessageTimeValue :previous_created_at="getPreviousMessageDate(index, messageListIndex)" :created_at="message.created_at"></MessageTimeValue>
+            <MessageTimeValue :previous_created_at="getPreviousMessageDate(messageList, message)" :created_at="message.created_at"></MessageTimeValue>
             <MessageOnPage :profile="profile" :message="message"></MessageOnPage>
           </div>
 
@@ -22,7 +22,7 @@
 import { getProfileByUserId } from '~~/api/profile.js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
-import { Message } from '~~/types/messages';
+import { Message, Messages } from '~~/types/messages';
 import MessageTimeValue from '~~/components/message-time-value.vue';
 
 const client = useSupabaseClient()
@@ -85,25 +85,16 @@ function scrollToItem() {
 }
 
 // Return date from the previous message
-function getPreviousMessageDate(messageIndex: number, messageRowIndex: number) {
-  try {
-    if(status.value === 'ready') {
-      if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page === 0) {
-      return undefined
+function getPreviousMessageDate(messagesPage: Messages, currentMessage: Message) {
+    const messageId = messagesPage.messages.findIndex(value => value.id === currentMessage.id)
+    const currentPage = messagesPage.page
+    const previousPageList = messages.find(value => value.page === currentPage - 1)
+    if(messageId > 0) {
+      return messagesPage.messages[messageId - 1].created_at
+    } else if(messageId === 0 && previousPageList && previousPageList.messages && previousPageList.messages.at(-1) ) {
+        return previousPageList.messages.at(-1)?.created_at
     }
-    if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page !== 0) {
-      return messages[messageRowIndex].messages[messageIndex].created_at
-    }
-    if(messageIndex === 0 ) {
-      return messages[messageRowIndex - 1].messages[pagination.itemsPerPage - 1].created_at
-    }
-    return messages[messageRowIndex].messages[messageIndex - 1].created_at
-    }
-  } catch {
-    console.log('something went wrong')
-    return ''
-  }
- 
+    return currentMessage.created_at
 }
 
 // Function to send messages
