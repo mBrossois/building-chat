@@ -91,6 +91,8 @@ function getPreviousMessageDate(messagesPage: Messages, currentMessage: Message)
     const previousPageList = messages.find(value => value.page === currentPage - 1)
     if(messageId > 0) {
       return messagesPage.messages[messageId - 1].created_at
+    } else if(messageId === 0 && currentPage === 0) {
+      return ''
     } else if(messageId === 0 && previousPageList && previousPageList.messages && previousPageList.messages.at(-1) ) {
         return previousPageList.messages.at(-1)?.created_at
     }
@@ -114,7 +116,7 @@ async function onSendMessage(newMessage: string){
       alert('Something went wrong !')
       return 
     }
-    await useMessagesStore().addNewMessage({name: profile.name, message: newMessage, created_at: new Date().toString(), profile_id: profile.id})
+    await useMessagesStore().addNewMessage({id: messages.find,name: profile.name, message: newMessage, created_at: new Date().toString(), profile_id: profile.id})
     chat.value.scrollTop = chat.value.scrollHeight
 }
 
