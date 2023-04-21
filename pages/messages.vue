@@ -86,18 +86,24 @@ function scrollToItem() {
 
 // Return date from the previous message
 function getPreviousMessageDate(messageIndex: number, messageRowIndex: number) {
-  if(status.value === 'ready') {
-    if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page === 0) {
-    return undefined
+  try {
+    if(status.value === 'ready') {
+      if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page === 0) {
+      return undefined
+    }
+    if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page !== 0) {
+      return messages[messageRowIndex].messages[messageIndex].created_at
+    }
+    if(messageIndex === 0 ) {
+      return messages[messageRowIndex - 1].messages[pagination.itemsPerPage - 1].created_at
+    }
+    return messages[messageRowIndex].messages[messageIndex - 1].created_at
+    }
+  } catch {
+    console.log('something went wrong')
+    return ''
   }
-  if(messageIndex === 0 && messageRowIndex === 0 && messages[messageRowIndex].page !== 0) {
-    return messages[messageRowIndex].messages[messageIndex].created_at
-  }
-  if(messageIndex === 0) {
-    return messages[messageRowIndex - 1].messages[pagination.itemsPerPage - 1].created_at
-  }
-  return messages[messageRowIndex].messages[messageIndex - 1].created_at
-  }
+ 
 }
 
 // Function to send messages
