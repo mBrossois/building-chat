@@ -95,7 +95,6 @@ function getPreviousMessageDate(messageIndex: number, messageRowIndex: number) {
       return messages[messageRowIndex].messages[messageIndex].created_at
     }
     if(messageIndex === 0 ) {
-      console.log(messages[messageRowIndex - 1 ])
       return messages[messageRowIndex - 1].messages[pagination.itemsPerPage - 1].created_at
     }
     return messages[messageRowIndex].messages[messageIndex - 1].created_at
