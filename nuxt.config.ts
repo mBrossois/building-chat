@@ -6,6 +6,8 @@ export default defineNuxtConfig({
         '@nuxtjs/supabase',
         'nuxt-icon',
         '@pinia/nuxt',
+        'tablet-developer-tools'
+        
     ],
     devtools: {
         enabled: true,
@@ -15,6 +17,9 @@ export default defineNuxtConfig({
         autoImports: [
             'defineStore',
         ]
+    },
+    developerToolsTablet: {
+        enabled: true
     },
     runtimeConfig: {
         public: {

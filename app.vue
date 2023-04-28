@@ -3,6 +3,8 @@
     <Header></Header>
     <Menu></Menu>
     <NuxtPage></NuxtPage>
+    <TabletDevToolsMainComponent />
+
   </div>
 </template>
 
