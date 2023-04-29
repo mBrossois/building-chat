@@ -16,12 +16,12 @@ export const useProfileStore = defineStore('profile', () => {
       return profilePicture.value.find(value => value.profile_id === profile_id)
     }
 
-    async function getProfilePicture(profileId: number) {
+    async function getProfilePicture(profileId: number): Promise<ProfilePicture> {
       if(profileId === -1) {
         return defaultPicture
       }
       else if(profilePicture.value.length > 0 && filterProfileId(profileId)) {
-        return profileId
+        return defaultPicture
       } else {
         const result = await getCharacter(profileId) 
         if(!result) {

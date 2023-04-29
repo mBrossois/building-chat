@@ -39,7 +39,7 @@ export async function getProfileByProfileId(profile_id: string) {
 export async function getCharacter(profile_id: number) {
     const client = useSupabaseClient()
 
-    const { data: ProfilePicture, error: profileErrror } = await client
+    const { data: Character, error: error } = await client
     .from('Character')
     .select(`
         profile_id,
@@ -50,9 +50,9 @@ export async function getCharacter(profile_id: number) {
     `)
     .eq('profile_id', profile_id)
     .single()
-    if(profileErrror) {
-        alert('Something went wrong !')
+    if(error) {
+        alert(error.message)
         return
     }
-    return ProfilePicture
+    return Character
 }

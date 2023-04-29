@@ -11,13 +11,14 @@
 
 <script setup lang="ts">
 import { useProfileStore } from '~/store/profile'
+import { ProfilePicture } from '~~/types/profile'
 
 const props = defineProps<{
     scale: number,
     profileId?: number,
 }>()
 
-const profilePicture = await useProfileStore().getProfilePicture(props.profileId ? props.profileId : -1)
+const profilePicture: ProfilePicture = await useProfileStore().getProfilePicture(props.profileId ? props.profileId : -1)
 
 const background = ref()
 
@@ -60,6 +61,12 @@ const cssProperties = ref({
 })
 
 onMounted(() => {
+    // Set profile picture css properties
+    background.value.style.setProperty('--hair-length', profilePicture.hair_length)
+    background.value.style.setProperty('--hair-color', profilePicture.hair_color)
+    background.value.style.setProperty('--face-color', profilePicture.face_color)
+    background.value.style.setProperty('--shirt-color', profilePicture.shirt_color)
+
     // set Window css properties
     background.value.style.setProperty('--window-height', cssProperties.value.window.windowHeight)
     background.value.style.setProperty('--window-width', cssProperties.value.window.windowWidth)
@@ -113,21 +120,21 @@ onMounted(() => {
     width: var(--face-width);
     top: var(--face-top);
     left: var(--face-left);
-    background-color: #FFE7AB;
+    background-color: var(--face-color);
 }
 .hair {
     height: var(--hair-height);
     width: var(--hair-width);
     top: var(--hair-top);
     left: var(--hair-left);
-    background-color: #B87B1F;
+    background-color: var(--hair-color);
 }
 .shirt {
     border-bottom: var(--shirt-border-bottom) solid;
     border-left: var(--shirt-border-left) solid transparent;
     border-right: var(--shirt-border-right) solid transparent;
     left: var(--shirt-left);
-    border-bottom-color: #2D41F1;
+    border-bottom-color: var(--shirt-color);
 }
 .eyes {
     height: var(--eyes-height);

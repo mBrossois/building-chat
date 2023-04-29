@@ -44,7 +44,6 @@ watch(user, () => {
 
 <template>
   <div class="flex flex-col items-center pt-16">
-    {{ config.SITE_URL }}
     <div class="mb-5">
       <Icon name="ic:outline-email" class="h-9 w-9 absolute ml-2 mt-0.5"></Icon>
       <input type="text" v-model="email" placeholder="Fill your e-mail adress in" class="w-80 h-11 bg-background-color text-black indent-14 placeholder:text-black border-b" >
