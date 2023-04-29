@@ -1,5 +1,4 @@
 <template>
-    
     <div ref="background" class="background relative overflow-hidden bg-window-bg z-0">
         <div class="reflection absolute bg-white -rotate-45 origin-left"></div>
         <div class="hair absolute rounded-full"></div>
@@ -18,7 +17,7 @@ const props = defineProps<{
     profileId?: number,
 }>()
 
-const profilePicture = await useProfileStore().getProfilePicture(props.profileId)
+const profilePicture = await useProfileStore().getProfilePicture(props.profileId ? props.profileId : -1)
 
 const background = ref()
 

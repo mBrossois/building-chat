@@ -36,6 +36,23 @@ export async function getProfileByProfileId(profile_id: string) {
 }
 
 // Get profile picture by profile_id
-export async function getProfilePicture(params:type) {
-    
+export async function getCharacter(profile_id: number) {
+    const client = useSupabaseClient()
+
+    const { data: ProfilePicture, error: profileErrror } = await client
+    .from('Character')
+    .select(`
+        profile_id,
+        hair_length,
+        hair_color,
+        face_color,
+        shirt_color
+    `)
+    .eq('profile_id', profile_id)
+    .single()
+    if(profileErrror) {
+        alert('Something went wrong !')
+        return
+    }
+    return ProfilePicture
 }
