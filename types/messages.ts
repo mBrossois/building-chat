@@ -4,7 +4,7 @@ export interface Message {
     message: string
     name: string
     floor?: number
-    profile_id?: string
+    profile_id?: number
 }
 
 export interface Messages {

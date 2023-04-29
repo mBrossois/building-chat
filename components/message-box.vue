@@ -3,11 +3,11 @@
         <VueEmojiPicker disable-skin-tones class="absolute bottom-16 left-1" :native="true" @select="onSelectEmoji" />
     </div>
 
-    <form class="message h-14 w-screen absolute bottom-0" @submit.prevent="onSendMessage">
+    <form class="message h-14 w-screen absolute bottom-0 flex bg-white" @submit.prevent="onSendMessage">
 
-        <Icon v-if="iconBefore" :name="iconBefore" class="mt-3.5 h-7 w-7 absolute ml-2" @click="toggleEmojiPicker"></Icon>
-        <input class="w-full h-full indent-11" type="text" placeholder="Write your message here!" v-model="newMessage" />
-        <Icon v-if="iconAfter" :name="iconAfter" class="mt-3.5 h-7 w-7 absolute mr-2 right-0" @click="onSendMessage"></Icon>
+        <Icon v-if="iconBefore" :name="iconBefore" class="mt-3.5 h-7 w-8 ml-2 pr-1" @click="toggleEmojiPicker"></Icon>
+        <textarea class="flex-1 resize-none" rows="1" colls="50" maxlength="500" placeholder="Write your message here!" v-model="newMessage" />
+        <Icon v-if="iconAfter" :name="iconAfter" class="mt-3.5 h-7 w-8 mr-2 right-0 pl-1.5" @click="onSendMessage"></Icon>
     </form>
 </template>
 

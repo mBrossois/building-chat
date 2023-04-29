@@ -1,4 +1,4 @@
 export type Profile = {
-    id: string
+    id: number
     name: string
 }

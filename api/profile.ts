@@ -34,3 +34,8 @@ export async function getProfileByProfileId(profile_id: string) {
     }
     return Profile
 }
+
+// Get profile picture by profile_id
+export async function getProfilePicture(params:type) {
+    
+}

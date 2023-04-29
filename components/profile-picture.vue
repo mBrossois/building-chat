@@ -11,10 +11,14 @@
 </template>
 
 <script setup lang="ts">
+import { useProfileStore } from '~/store/profile'
 
-const props = defineProps({
-    scale: Number
-})
+const props = defineProps<{
+    scale: number,
+    profileId?: number,
+}>()
+
+const profilePicture = await useProfileStore().getProfilePicture(props.profileId)
 
 const background = ref()
 
