@@ -13,12 +13,12 @@
             <div class="triangle-conversation border-solid border-l-black border-l-[12px] border-y-transparent border-y-4 border-r-0 h-min self-end mb-6"></div>
           </div>
           <div class="sender flex-0 max-w-xs p-1 self-end">
-            <ProfilePicture :scale=".65"></ProfilePicture>
+            <ProfilePicture :profile-id="getProfileId()" :scale=".65"></ProfilePicture>
           </div>
     </div>
     <div v-else class="message-box-others flex">
         <div class="sender flex-0 max-w-xs p-1 self-end">
-            <ProfilePicture :scale=".65"></ProfilePicture>
+            <ProfilePicture :profile-id="getProfileId()" :scale=".65"></ProfilePicture>
           </div>
           <div class="flex message flex-0 p-1 w-full ">
             <div class="triangle-conversation border-solid border-r-black border-r-[12px] border-y-transparent border-y-4 border-l-0 h-min self-end mb-6"></div>
@@ -49,4 +49,13 @@ const props = defineProps<{
 const isCurrentUser = computed(() => {
     return props.message.profile_id === props.profile?.id
 })
+
+function getProfileId() {
+  if(props.message && props.message.profile_id) {
+    return props.message.profile_id
+  } else {
+    return undefined
+  }
+}
+
 </script>
