@@ -19,7 +19,7 @@ export default defineNuxtConfig({
         ]
     },
     developerToolsTablet: {
-        enabled: true
+        enabled: process.env.NODE_ENV === 'production' ? false : true
     },
     runtimeConfig: {
         public: {
