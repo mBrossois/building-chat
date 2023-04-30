@@ -117,7 +117,7 @@ async function onSendMessage(newMessage: string){
       alert('Something went wrong !')
       return 
     }
-    await useMessagesStore().addNewMessage({id: messages.find,name: profile.name, message: newMessage, created_at: new Date().toString(), profile_id: profile.id})
+    await useMessagesStore().addNewMessage({id: '-1', name: profile.name, message: newMessage, created_at: new Date().toString(), profile_id: profile.id})
     chat.value.scrollTop = chat.value.scrollHeight
 }
 
