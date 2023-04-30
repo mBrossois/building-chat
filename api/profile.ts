@@ -56,3 +56,23 @@ export async function getCharacter(profile_id: number) {
     }
     return Character
 }
+
+// Get all profile pictures
+export async function getAllCharacters() {
+    const client = useSupabaseClient()
+
+    const { data: Character, error: error } = await client
+    .from('Character')
+    .select(`
+        profile_id,
+        hair_length,
+        hair_color,
+        face_color,
+        shirt_color
+    `)
+    if(error) {
+        alert(error.message)
+        return
+    }
+    return Character
+}

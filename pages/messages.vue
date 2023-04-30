@@ -1,7 +1,7 @@
 <template>
     <div ref="chat" class="chat main-screen-height overflow-y-scroll ">
       <div v-if="status === 'ready'">
-        <div ref="messagesBlock" v-for="messageList, messageListIndex in messages" :key="messageList.page">
+        <div ref="messagesBlock" v-for="messageList in messages" :key="messageList.page">
           <div v-for="message, index in messageList.messages" :key="index" class="messages py-2 px-4">
             <MessageTimeValue :previous_created_at="getPreviousMessageDate(messageList, message)" :created_at="message.created_at"></MessageTimeValue>
             <MessageOnPage :profile="profile" :message="message"></MessageOnPage>
@@ -22,8 +22,8 @@
 import { getProfileByUserId } from '~~/api/profile.js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
+import { useProfileStore } from '~/store/profile'
 import { Message, Messages } from '~~/types/messages';
-import MessageTimeValue from '~~/components/message-time-value.vue';
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
@@ -56,7 +56,8 @@ const messages = useMessagesStore().messages
 // let messages = addToMessagesMock()
 
 // Scroll to the bottom of the chat on load
-onMounted(() => {
+onMounted(async() => {
+  await useProfileStore().getAllProfilePictures()
 
   // Load new messages when the user scrolls to the top of the chat
   chat.value.onscroll = async () => {
