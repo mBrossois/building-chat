@@ -1,4 +1,4 @@
-import { getCharacter } from "~/api/profile"
+import { getAllCharacters, getCharacter } from "~/api/profile"
 import { ProfilePicture } from "~~/types/profile"
 
 export const useProfileStore = defineStore('profile', () => {
@@ -21,7 +21,7 @@ export const useProfileStore = defineStore('profile', () => {
         return defaultPicture
       }
       else if(profilePicture.value.length > 0 && filterProfileId(profileId)) {
-        return defaultPicture
+        return filterProfileId(profileId)!
       } else {
         const result = await getCharacter(profileId) 
         if(!result) {
@@ -31,6 +31,17 @@ export const useProfileStore = defineStore('profile', () => {
         return result
       }
     }
+
+    async function getAllProfilePictures() {
+      if(profilePicture.value.length === 0) {
+        const result = await getAllCharacters()
+        if(!result) {
+          console.log("Couldn't find any pictures")
+        } else {
+          profilePicture.value = result
+        }
+      }
+    }
   
-    return { getProfilePicture }
+    return { getProfilePicture, getAllProfilePictures }
   })
