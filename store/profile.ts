@@ -1,8 +1,26 @@
-import { getAllCharacters, getCharacter } from "~/api/profile"
+import { getAllCharacters, getCharacter, getProfileByUserId } from "~/api/profile"
 import { ProfilePicture } from "~~/types/profile"
 
 export const useProfileStore = defineStore('profile', () => {
-    const profilePicture: Ref<Array<ProfilePicture>> = ref([])
+  // User profile
+  const profileId: Ref<{id: number, name: string}> = ref({id: -1, name: ''})
+
+  async function getActiveUser(client: any, userId: string) {
+    if(profileId.value.id === -1) {
+      const result = await getProfileByUserId(client, userId)
+      profileId.value = result ? result : {id: -1, name: ''}
+      return profileId.value
+    } else {
+      return profileId.value
+    }
+  }
+
+  function resetProfileId() {
+    profileId.value = {id: -1, name: ''}
+  }
+  
+  // Profile picture  
+  const profilePicture: Ref<Array<ProfilePicture>> = ref([])
 
     const defaultPicture: ProfilePicture = {
       profile_id: -1,
@@ -43,5 +61,5 @@ export const useProfileStore = defineStore('profile', () => {
       }
     }
   
-    return { getProfilePicture, getAllProfilePictures }
+    return { getActiveUser, resetProfileId, getProfilePicture, getAllProfilePictures }
   })
