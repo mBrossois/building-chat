@@ -6,7 +6,8 @@ export default defineNuxtConfig({
         '@nuxtjs/supabase',
         'nuxt-icon',
         '@pinia/nuxt',
-        'tablet-developer-tools'
+        'tablet-developer-tools',
+        '@vite-pwa/nuxt'
         
     ],
     devtools: {
@@ -20,6 +21,20 @@ export default defineNuxtConfig({
     },
     developerToolsTablet: {
         enabled: process.env.NODE_ENV === 'production' ? false : true
+    },
+    pwa: {
+        registerWebManifestInRouteRules: true,
+        strategies: 'injectManifest',
+        srcDir: './service-worker',
+        filename: 'sw.ts',
+        injectManifest: {
+            globPatterns: ['**/*.{ts,js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf,wasm}'],
+            globIgnores: ['shiki/**', 'manifest**.webmanifest'],
+        },
+        devOptions: {
+            enabled: true,
+            type: 'module',
+        },
     },
     runtimeConfig: {
         public: {

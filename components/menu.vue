@@ -11,6 +11,7 @@
 
 <script setup lang="ts">
     import { useMenuStore } from '~/store/menu';
+    import { useProfileStore } from '~~/store/profile';
     // Check if menu is open
     function isOpen(): boolean {
         return useMenuStore().isOpen
@@ -20,6 +21,7 @@
     async function logOut() {
         await useSupabaseAuthClient().auth.signOut()
         await navigateTo('/login')
+        useProfileStore().resetProfileId()
         useMenuStore().toggleMenu()
     }
 </script>

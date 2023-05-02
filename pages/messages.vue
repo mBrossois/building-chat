@@ -19,11 +19,13 @@
 </template>
 
 <script setup lang="ts">
-import { getProfileByUserId } from '~~/api/profile.js';
+import { RealtimeChannel} from '@supabase/realtime-js';
 import { sendMessage, getMessages, subscribeToNewMessages } from '~/api/messages';
 import { useMessagesStore } from '~~/store/messages';
 import { useProfileStore } from '~/store/profile'
 import { Message, Messages } from '~~/types/messages';
+
+let MessagesChannel: RealtimeChannel
 
 const client = useSupabaseClient()
 const user = useSupabaseUser()
@@ -35,12 +37,12 @@ const messagesBlock = ref()
 const status = ref('loading')
 
 // get profile data
-const profile = await getProfileByUserId(client, user.value?.id ? user.value.id : '') 
+const profile = await useProfileStore().getActiveUser(client, user.value?.id ? user.value.id : '') 
 
-// // Set initial pagination
+// Set initial pagination
 const pagination = await getInitialPagination()
 
-// // Get the messages from the database
+// Get the messages from the database
 setInitialMessages(client, pagination).then(() => {
   nextTick(() => {
     if(chat.value && chat.value.scrollHeight) {
@@ -48,10 +50,7 @@ setInitialMessages(client, pagination).then(() => {
     }
   })
 })
-// // // Subscribe to changes in the Messages table
-const MessagesChannel = subscribeToNewMessages(client, profile?.id ? profile.id : '')
-
-// // Create a ref to store the messages
+// Create a ref to store the messages
 const messages = useMessagesStore().messages
 // let messages = addToMessagesMock()
 
@@ -74,6 +73,10 @@ onMounted(async() => {
       useMessagesStore().addMessagesToBottomPage(messagesResponseSecond as Array<Message>)
     }
   }
+
+    // Subscribe to changes in the Messages table
+    MessagesChannel = subscribeToNewMessages(client, profile?.id ? profile.id : -1)
+
 
   status.value = 'ready'
 

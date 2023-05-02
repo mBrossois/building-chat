@@ -60,7 +60,7 @@ export async function getMessagesLength() {
 }
 
 // Subscribe to new messages
-export const subscribeToNewMessages = (client: any, profile_id: string) => {
+export const subscribeToNewMessages = (client: any, profile_id: number) => {
 
   return client.channel('listen-messages-channel')
   .on(
