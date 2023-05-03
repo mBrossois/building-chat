@@ -29,7 +29,7 @@ export default defineNuxtConfig({
         filename: 'sw.ts',
         injectManifest: {
             globPatterns: ['**/*.{ts,js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf,wasm}'],
-            globIgnores: ['shiki/**', 'manifest**.webmanifest'],
+            globIgnores: ['manifest**.webmanifest'],
         },
         devOptions: {
             enabled: true,
